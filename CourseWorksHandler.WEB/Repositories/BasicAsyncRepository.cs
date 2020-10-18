@@ -70,6 +70,18 @@ namespace CourseWorksHandler.WEB.Repositories
         {
             var values = InsertValues(item);
             var insertCommand = db.CreateCommand();
+            insertCommand.CommandText = GenerateInsertCommandOfValues(values);
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                insertCommand.Parameters.AddWithValue($"@{i}", values[i]);
+            }
+
+            await insertCommand.ExecuteNonQueryAsync();
+        }
+
+        private static string GenerateInsertCommandOfValues(object[] values)
+        {
             var sb = new StringBuilder($"INSERT INTO {tableName} VALUES(");
             for (int i = 0; i < values.Length; i++)
             {
@@ -79,20 +91,29 @@ namespace CourseWorksHandler.WEB.Repositories
                 }
                 sb.Append('@');
                 sb.Append(i);
-
-                insertCommand.Parameters.AddWithValue($"@{i}", values[i]);
             }
             sb.Append(')');
-            insertCommand.CommandText = sb.ToString();
-
-            await insertCommand.ExecuteNonQueryAsync();
-
+            return sb.ToString();
         }
 
         public async Task UpdateAsync(T item)
         {
             var fieldsAndValues = UpdateFieldsAndValues(item);
             var updateCommand = db.CreateCommand();
+            updateCommand.CommandText = GenerateUpdateCommandOfPropertiesAndValues(fieldsAndValues);
+
+            for (int i = 0; i < fieldsAndValues.Length; i++)
+            {
+                updateCommand.Parameters.AddWithValue($"@{i}", fieldsAndValues[i].Item2);
+            }
+
+            updateCommand.Parameters.AddWithValue($"@id", UpdatePredicatePropertyEqualsValue.Item2(item));
+
+            await updateCommand.ExecuteNonQueryAsync();
+        }
+
+        private string GenerateUpdateCommandOfPropertiesAndValues((string, object)[] fieldsAndValues)
+        {
             var sb = new StringBuilder($"UPDATE {tableName} SET ");
             for (int i = 0; i < fieldsAndValues.Length; i++)
             {
@@ -103,17 +124,11 @@ namespace CourseWorksHandler.WEB.Repositories
                 sb.Append(fieldsAndValues[i].Item1);
                 sb.Append('=');
                 sb.Append($"@{i}");
-
-                updateCommand.Parameters.AddWithValue($"@{i}", fieldsAndValues[i].Item2);
             }
             sb.Append("WHERE ");
             sb.Append(UpdatePredicatePropertyEqualsValue.Item1);
             sb.Append("=@id");
-            updateCommand.Parameters.AddWithValue($"@id", UpdatePredicatePropertyEqualsValue.Item2(item));
-            updateCommand.CommandText = sb.ToString();
-
-            await updateCommand.ExecuteNonQueryAsync();
-
+            return sb.ToString();
         }
     }
 }
