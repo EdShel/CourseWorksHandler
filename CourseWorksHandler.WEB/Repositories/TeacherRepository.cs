@@ -10,7 +10,7 @@ namespace CourseWorksHandler.WEB.Repositories
         {
         }
 
-        public override Func<SqlDataReader, Teacher> SelectMapper
+        protected override Func<SqlDataReader, Teacher> SelectMapper
         {
             get => r => new Teacher
             {
@@ -19,7 +19,7 @@ namespace CourseWorksHandler.WEB.Repositories
             };
         }
 
-        public override Func<Teacher, object[]> InsertValues
+        protected override Func<Teacher, object[]> InsertValues
         {
             get => teacher => new object[]
             {
@@ -27,16 +27,16 @@ namespace CourseWorksHandler.WEB.Repositories
             };
         }
 
-        public override Func<Teacher, (string, object)[]> UpdateFieldsAndValues
+        protected override Func<Teacher, TablePropertyValuePair[]> UpdatePropertiesAndValuesExtractor
         {
-            get => teacher => new (string, object)[]{
-                ("FullName", teacher.FullName)
+            get => teacher => new TablePropertyValuePair[]{
+                new TablePropertyValuePair("FullName", teacher.FullName)
             };
         }
 
-        public override (string, Func<Teacher, object>) UpdatePredicatePropertyEqualsValue
+        protected override TablePropertyExtractor UpdatePredicatePropertyEqualsValue
         {
-            get => ("Id", teacher => teacher.Id);
+            get => new TablePropertyExtractor("Id", t => t.Id);
         }
     }
 }

@@ -24,13 +24,13 @@ namespace CourseWorksHandler.WEB.Repositories
             db = sqlConnection;
         }
 
-        public abstract Func<SqlDataReader, T> SelectMapper { get; }
+        protected abstract Func<SqlDataReader, T> SelectMapper { get; }
 
-        public abstract Func<T, object[]> InsertValues { get; }
+        protected abstract Func<T, object[]> InsertValues { get; }
 
-        public abstract Func<T, (string, object)[]> UpdateFieldsAndValues { get; }
+        protected abstract Func<T, TablePropertyValuePair[]> UpdatePropertiesAndValuesExtractor { get; }
 
-        public abstract (string, Func<T, object>) UpdatePredicatePropertyEqualsValue { get; }
+        protected abstract TablePropertyExtractor UpdatePredicatePropertyEqualsValue { get; }
 
         public async Task DeleteAsync(int id)
         {
@@ -98,37 +98,63 @@ namespace CourseWorksHandler.WEB.Repositories
 
         public async Task UpdateAsync(T item)
         {
-            var fieldsAndValues = UpdateFieldsAndValues(item);
+            var fieldsAndValues = UpdatePropertiesAndValuesExtractor(item);
             var updateCommand = db.CreateCommand();
             updateCommand.CommandText = GenerateUpdateCommandOfPropertiesAndValues(fieldsAndValues);
 
             for (int i = 0; i < fieldsAndValues.Length; i++)
             {
-                updateCommand.Parameters.AddWithValue($"@{i}", fieldsAndValues[i].Item2);
+                updateCommand.Parameters.AddWithValue($"@{i}", fieldsAndValues[i].PropertyValue);
             }
 
-            updateCommand.Parameters.AddWithValue($"@id", UpdatePredicatePropertyEqualsValue.Item2(item));
+            updateCommand.Parameters.AddWithValue($"@id", UpdatePredicatePropertyEqualsValue.PropertyExtractor(item));
 
             await updateCommand.ExecuteNonQueryAsync();
         }
 
-        private string GenerateUpdateCommandOfPropertiesAndValues((string, object)[] fieldsAndValues)
+        private string GenerateUpdateCommandOfPropertiesAndValues(TablePropertyValuePair[] propertiesAndValues)
         {
             var sb = new StringBuilder($"UPDATE {tableName} SET ");
-            for (int i = 0; i < fieldsAndValues.Length; i++)
+            for (int i = 0; i < propertiesAndValues.Length; i++)
             {
                 if (i != 0)
                 {
                     sb.Append(',');
                 }
-                sb.Append(fieldsAndValues[i].Item1);
+                sb.Append(propertiesAndValues[i].PropertyName);
                 sb.Append('=');
                 sb.Append($"@{i}");
             }
             sb.Append("WHERE ");
-            sb.Append(UpdatePredicatePropertyEqualsValue.Item1);
+            sb.Append(UpdatePredicatePropertyEqualsValue.PropertyName);
             sb.Append("=@id");
             return sb.ToString();
+        }
+
+        protected struct TablePropertyValuePair
+        {
+            public string PropertyName;
+
+            public object PropertyValue;
+
+            public TablePropertyValuePair(string propertyName, object propertyValue)
+            {
+                PropertyName = propertyName;
+                PropertyValue = propertyValue;
+            }
+        }
+
+        protected struct TablePropertyExtractor
+        {
+            public string PropertyName;
+
+            public Func<T, object> PropertyExtractor;
+
+            public TablePropertyExtractor(string propertyName, Func<T, object> propertyExtractor)
+            {
+                PropertyName = propertyName;
+                PropertyExtractor = propertyExtractor;
+            }
         }
     }
 }
