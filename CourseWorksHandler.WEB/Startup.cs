@@ -38,7 +38,7 @@ namespace CourseWorksHandler.WEB
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddTransient(_ => new SqlConnection(
-                Configuration.GetConnectionString("DefaultConnectionString")));
+                Configuration.GetConnectionString("DefaultConnection")));
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

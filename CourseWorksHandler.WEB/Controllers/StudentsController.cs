@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using CourseWorksHandler.WEB.Models;
+using CourseWorksHandler.WEB.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CourseWorksHandler.WEB.Controllers
@@ -17,15 +19,22 @@ namespace CourseWorksHandler.WEB.Controllers
 
     public class TeachersController : Controller
     {
-        public IActionResult Index()
+        private SqlConnection db;
+
+        private TeacherRepository teachers;
+
+        public TeachersController(SqlConnection db)
         {
-            return View();
+            this.db = db;
+            teachers = new TeacherRepository(db);
         }
 
-        [HttpPost]
-        public IActionResult Create(Teacher teacher)
+        public async Task<IActionResult> Index()
         {
-
+            await db.OpenAsync();
+            var allTeachers = await teachers.GetAllAsync();
+            db.Close();
+            return View(allTeachers);
         }
     }
 }

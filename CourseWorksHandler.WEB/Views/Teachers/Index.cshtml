@@ -1,0 +1,8 @@
+﻿@model IEnumerable<Teacher>
+
+<ul>
+    @foreach(var t in Model)
+    {
+        <li>@t.FullName</li>
+    }
+</ul>
