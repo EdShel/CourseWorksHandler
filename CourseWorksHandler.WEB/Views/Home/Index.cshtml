@@ -1,4 +1,42 @@
-﻿<div class="container-fluid">
+﻿<div class="container">
     <a class="btn btn-primary"
        asp-controller="Teacher" asp-action="Index">Teachers</a>
+
+    <div id="app">
+
+        <ol>
+            <li v-for="x in results">{{ x.studentName }}</li>
+        </ol>
+        <button v-on:click="prevPage">Prev</button>
+        <button v-on:click="nextPage">Next</button>
+
+    </div>
 </div>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            pageIndex: 0,
+            results: []
+        },
+        methods: {
+            nextPage() {
+                this.pageIndex++;
+                this.updateTablePage();
+            },
+            prevPage() {
+                this.pageIndex--;
+                this.updateTablePage();
+            },
+            updateTablePage(pageIndex) {
+                let url = "@Url.AbsoluteAction("GetGeneralInfoTable", "Students")?pageIndex=" + this.pageIndex;
+                axios.get(url).then(responce => {
+                    console.log(responce);
+                    this.results = responce.data;
+                });
+            }
+        }
+    });
+
+</script>

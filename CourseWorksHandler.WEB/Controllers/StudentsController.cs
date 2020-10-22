@@ -11,9 +11,29 @@ namespace CourseWorksHandler.WEB.Controllers
 {
     public class StudentsController : Controller
     {
+        private SqlConnection db;
+
+        private StudentRepository students;
+
+        public StudentsController(SqlConnection db)
+        {
+            this.db = db;
+            this.students = new StudentRepository(db);
+        }
+
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetGeneralInfoTable(int pageIndex)
+        {
+            await db.OpenAsync();
+            const int pageSize = 20;
+            var rows = await students.GetStudentsGeneralInfoPaginated(pageIndex, pageSize);
+            db.Close();
+            return Json(rows);
         }
     }
 
