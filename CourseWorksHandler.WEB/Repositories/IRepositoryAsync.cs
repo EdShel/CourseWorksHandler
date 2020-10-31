@@ -13,6 +13,6 @@ namespace CourseWorksHandler.WEB.Repositories
 
         Task DeleteAsync(int id);
 
-        Task<T> SelectAsync(int id);
+        Task<T> GetAsync(int id);
     }
 }

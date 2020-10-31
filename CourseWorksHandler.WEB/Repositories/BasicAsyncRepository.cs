@@ -40,17 +40,19 @@ namespace CourseWorksHandler.WEB.Repositories
             await deleteCommand.ExecuteNonQueryAsync();
         }
 
-        public async Task<T> SelectAsync(int id)
+        public async Task<T> GetAsync(int id)
         {
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = $"SELECT * FROM {tableName} WHERE Id = @id";
             selectCommand.Parameters.AddWithValue("@id", id);
             var reader = await selectCommand.ExecuteReaderAsync();
-            if (!reader.HasRows)
+            if (!(await reader.ReadAsync()))
             {
                 throw new ArgumentException($"Not found {tableName} with Id = {id}");
             }
-            return SelectMapper(reader);
+            var obj = SelectMapper(reader);
+            reader.Close();
+            return obj;
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
@@ -63,6 +65,7 @@ namespace CourseWorksHandler.WEB.Repositories
             {
                 items.Add(SelectMapper(reader));
             }
+            reader.Close();
             return items;
         }
 

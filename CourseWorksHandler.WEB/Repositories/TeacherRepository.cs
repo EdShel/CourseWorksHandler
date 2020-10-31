@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 
 namespace CourseWorksHandler.WEB.Repositories
 {
+
     public sealed class TeacherRepository : BasicAsyncRepository<Teacher>
     {
         public TeacherRepository(SqlConnection sqlConnection) : base(sqlConnection)
