@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -74,7 +73,36 @@ namespace CourseWorksHandler.WEB.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "User is already registered");
+                    ModelState.AddModelError("", "Teacher is already registered");
+                }
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RegisterStudent(RegisterStudentModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                AppUser user = await usersRepository.GetByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    try
+                    {
+                        await usersRepository.RegisterStudentAsync(model);
+                        user = await usersRepository.GetByEmailAsync(model.Email);
+                        await Authenticate(user);
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("", ex.Message);
+                    }
+
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Student is already registered");
                 }
             }
             return View(model);

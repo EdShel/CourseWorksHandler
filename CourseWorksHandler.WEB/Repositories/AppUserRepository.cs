@@ -18,9 +18,21 @@ namespace CourseWorksHandler.WEB.Repositories
             var registerCommand = db.CreateCommand();
             registerCommand.CommandText = "EXEC RegisterTeacher @email, @passwordHash, @fullName";
             registerCommand.Parameters.AddWithValue("@email", request.Email);
-            registerCommand.Parameters.AddWithValue("@passwordHash", 
+            registerCommand.Parameters.AddWithValue("@passwordHash",
                 new PasswordHasher<AppUser>().HashPassword(null, request.Password));
             registerCommand.Parameters.AddWithValue("@fullName", request.FullName);
+            await registerCommand.ExecuteNonQueryAsync();
+        }
+
+        public async Task RegisterStudentAsync(RegisterStudentModel request)
+        {
+            var registerCommand = db.CreateCommand();
+            registerCommand.CommandText = "EXEC RegisterStudent @email, @passwordHash, @fullName, @groupName";
+            registerCommand.Parameters.AddWithValue("@email", request.Email);
+            registerCommand.Parameters.AddWithValue("@passwordHash",
+                new PasswordHasher<AppUser>().HashPassword(null, request.Password));
+            registerCommand.Parameters.AddWithValue("@fullName", request.FullName);
+            registerCommand.Parameters.AddWithValue("@groupName", request.GroupName);
             await registerCommand.ExecuteNonQueryAsync();
         }
 
