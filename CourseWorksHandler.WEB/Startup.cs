@@ -48,6 +48,7 @@ namespace CourseWorksHandler.WEB
                 Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddTransient<AppUserRepository>();
+            services.AddTransient<StudentRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

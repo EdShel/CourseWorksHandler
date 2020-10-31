@@ -1,4 +1,5 @@
 ﻿using CourseWorksHandler.WEB.Models;
+using CourseWorksHandler.WEB.ViewModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,16 +8,6 @@ using System.Threading.Tasks;
 
 namespace CourseWorksHandler.WEB.Repositories
 {
-    public sealed class StudentsGeneralInfo
-    {
-        public string GroupName { set; get; }
-
-        public string StudentName { set; get; }
-
-        public string Theme { set; get; }
-
-        public int Mark { set; get; }
-    }
 
     public sealed class StudentRepository : BasicAsyncRepository<Student>
     {
@@ -44,6 +35,23 @@ namespace CourseWorksHandler.WEB.Repositories
             }
 
             return results;
+        }
+
+        public async Task<int> GetStudentsCount()
+        {
+            var selectCount = db.CreateCommand();
+            selectCount.CommandText = "SELECT COUNT(*) FROM Student";
+            return (int)await selectCount.ExecuteScalarAsync();
+        }
+
+        public async Task SubmitCourseWork(CourseWorkSubmissionModel model)
+        {
+            var submitCommand = db.CreateCommand();
+            submitCommand.CommandText = "EXEC SubmitCourseWork @studentId, @theme, @task";
+            submitCommand.Parameters.AddWithValue("@studentId", model.StudentId);
+            submitCommand.Parameters.AddWithValue("@theme", model.Theme);
+            submitCommand.Parameters.AddWithValue("@task", model.Task);
+            await submitCommand.ExecuteNonQueryAsync();
         }
 
         #region Default implementation

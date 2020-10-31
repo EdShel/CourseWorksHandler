@@ -9,41 +9,40 @@
        asp-controller="Usersr" asp-action="Login">Вхід</a>
 
 
-    <div id="app">
+    <div id="table">
 
-        <ol>
-            <li v-for="x in results">{{ x.studentName }}</li>
-        </ol>
-        <button v-on:click="prevPage">Prev</button>
-        <button v-on:click="nextPage">Next</button>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Група</th>
+                    <th scope="col">ПІБ студента</th>
+                    <th scope="col">Тема проекту</th>
+                    <th scope="col">Оцінка</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="x in tableRows">
+                    <th>{{ x.groupName }}</th>
+                    <td>{{ x.studentName }}</td>
+                    <td>{{ x.theme }}</td>
+                    <td>{{ x.mark }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="row">
+            <div class="col col-xs-4">
+                <button v-on:click="prevPage">Prev</button>
+            </div>
+            <div class="col col-xs-4 text-center">
+                <span>Сторінка {{ pageIndex + 1 }} з {{ pagesCount + 1 }}</span>
+            </div> 
+            <div class="col col-xs-3">
+                <button class="pull-right" v-on:click="nextPage">Next</button>
+            </div>
+        </div>
 
     </div>
 </div>
 
-<script>
-    var app = new Vue({
-        el: '#app',
-        data: {
-            pageIndex: 0,
-            results: []
-        },
-        methods: {
-            nextPage() {
-                this.pageIndex++;
-                this.updateTablePage();
-            },
-            prevPage() {
-                this.pageIndex--;
-                this.updateTablePage();
-            },
-            updateTablePage(pageIndex) {
-                let url = "/Students/GetGeneralInfoTable?pageIndex=" + this.pageIndex;
-                axios.get(url).then(responce => {
-                    console.log(responce);
-                    this.results = responce.data;
-                });
-            }
-        }
-    });
-
-</script>
+<script src="~/js/indexHome.js"></script>

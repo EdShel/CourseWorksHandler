@@ -24,7 +24,7 @@ namespace CourseWorksHandler.WEB.Repositories
             db = sqlConnection;
         }
 
-        public async Task OpenConnection()
+        public async Task OpenConnectionAsync()
         {
             await db.OpenAsync();
         }

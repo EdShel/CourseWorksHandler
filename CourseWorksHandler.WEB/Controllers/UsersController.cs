@@ -33,7 +33,7 @@ namespace CourseWorksHandler.WEB.Controllers
             {
                 try
                 {
-                    await usersRepository.OpenConnection();
+                    await usersRepository.OpenConnectionAsync();
                     AppUser user = await usersRepository.GetByEmailAsync(model.Email);
                     if (user != null && usersRepository.VerifyPassword(user, model.Password))
                     {
@@ -63,7 +63,7 @@ namespace CourseWorksHandler.WEB.Controllers
             {
                 try
                 {
-                    await usersRepository.OpenConnection();
+                    await usersRepository.OpenConnectionAsync();
                     AppUser user = await usersRepository.GetByEmailAsync(model.Email);
                     if (user == null)
                     {
@@ -104,7 +104,7 @@ namespace CourseWorksHandler.WEB.Controllers
             {
                 try
                 {
-                    await usersRepository.OpenConnection();
+                    await usersRepository.OpenConnectionAsync();
                     AppUser user = await usersRepository.GetByEmailAsync(model.Email);
                     if (user == null)
                     {

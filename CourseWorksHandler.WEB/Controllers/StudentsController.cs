@@ -11,14 +11,13 @@ namespace CourseWorksHandler.WEB.Controllers
 {
     public class StudentsController : Controller
     {
-        private SqlConnection db;
+        private const int GENERAL_INFO_PAGE_SIZE = 5;
 
         private StudentRepository students;
 
-        public StudentsController(SqlConnection db)
+        public StudentsController(StudentRepository studentRepository)
         {
-            this.db = db;
-            this.students = new StudentRepository(db);
+            this.students = studentRepository;
         }
 
         public IActionResult Index()
@@ -29,11 +28,16 @@ namespace CourseWorksHandler.WEB.Controllers
         [HttpGet]
         public async Task<JsonResult> GetGeneralInfoTable(int pageIndex)
         {
-            await db.OpenAsync();
-            const int pageSize = 20;
-            var rows = await students.GetStudentsGeneralInfoPaginated(pageIndex, pageSize);
-            db.Close();
-            return Json(rows);
+            await students.OpenConnectionAsync();
+            int pagesCount = await students.GetStudentsCount() / GENERAL_INFO_PAGE_SIZE;
+            int pageNumber = Math.Max(0, Math.Min(pagesCount, pageIndex));
+            IEnumerable<StudentsGeneralInfo> rows = await students.GetStudentsGeneralInfoPaginated(pageNumber, GENERAL_INFO_PAGE_SIZE);
+            students.CloseConnection();
+            return Json(new
+            {
+                rows = rows,
+                totalPages = pagesCount
+            });
         }
     }
 
