@@ -67,24 +67,21 @@ namespace CourseWorksHandler.WEB.Controllers
                     AppUser user = await usersRepository.GetByEmailAsync(model.Email);
                     if (user == null)
                     {
-                        try
-                        {
-                            await usersRepository.RegisterTeacherAsync(model);
-                            user = await usersRepository.GetByEmailAsync(model.Email);
-                            await Authenticate(user);
-                        }
-                        catch (Exception ex)
-                        {
-                            ModelState.AddModelError("", ex.Message);
-                            return View(model);
-                        }
+                        await usersRepository.RegisterTeacherAsync(model);
+                        user = await usersRepository.GetByEmailAsync(model.Email);
+                        await Authenticate(user);
 
                         return RedirectToAction("Index", "Home");
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Teacher is already registered");
+                        ModelState.AddModelError(string.Empty, "Teacher is already registered");
                     }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                    return View(model);
                 }
                 finally
                 {
@@ -111,23 +108,21 @@ namespace CourseWorksHandler.WEB.Controllers
                     AppUser user = await usersRepository.GetByEmailAsync(model.Email);
                     if (user == null)
                     {
-                        try
-                        {
-                            await usersRepository.RegisterStudentAsync(model);
-                            user = await usersRepository.GetByEmailAsync(model.Email);
-                            await Authenticate(user);
-                        }
-                        catch (Exception ex)
-                        {
-                            ModelState.AddModelError("", ex.Message);
-                        }
+                        await usersRepository.RegisterStudentAsync(model);
+                        user = await usersRepository.GetByEmailAsync(model.Email);
+                        await Authenticate(user);
 
                         return RedirectToAction("Index", "Home");
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Student is already registered");
+                        ModelState.AddModelError(string.Empty, "User is already registered");
                     }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                    return View(model);
                 }
                 finally
                 {

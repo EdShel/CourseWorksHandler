@@ -37,7 +37,7 @@
                 this.updateTablePage();
             },
             updateTablePage(pageIndex) {
-                let url = "@Url.AbsoluteAction("GetGeneralInfoTable", "Students")?pageIndex=" + this.pageIndex;
+                let url = "/Students/GetGeneralInfoTable?pageIndex=" + this.pageIndex;
                 axios.get(url).then(responce => {
                     console.log(responce);
                     this.results = responce.data;

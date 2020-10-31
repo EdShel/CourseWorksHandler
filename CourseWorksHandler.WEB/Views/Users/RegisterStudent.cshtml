@@ -1,23 +1,28 @@
-﻿@model RegisterTeacherModel
+﻿@model RegisterStudentModel
 
 @{
-    ViewData["Title"] = "Реєстрація викладача";
+    ViewData["Title"] = "Реєстрація студента";
 }
 
 <h2>Реєстрація викладача</h2>
 
-<form asp-action="RegisterTeacher" asp-controller="Users" asp-anti-forgery="true">
+<form asp-action="RegisterStudent" asp-controller="Users" asp-anti-forgery="true">
     <div class="validation" asp-validation-summary="ModelOnly"></div>
     <div>
         <div>
-            <label asp-for="Email">Email викладача</label><br />
+            <label asp-for="Email">Email студента</label><br />
             <input type="text" asp-for="Email" />
             <span asp-validation-for="Email" />
         </div>
         <div>
-            <label asp-for="FullName">ПІБ викладача</label><br />
+            <label asp-for="FullName">ПІБ студента</label><br />
             <input asp-for="FullName" />
             <span asp-validation-for="FullName" />
+        </div>
+        <div>
+            <label asp-for="GroupName">Назва групи</label><br />
+            <input asp-for="GroupName" />
+            <span asp-validation-for="GroupName" />
         </div>
         <div>
             <label asp-for="Password">Введіть пароль</label><br />
