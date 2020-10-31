@@ -24,6 +24,16 @@ namespace CourseWorksHandler.WEB.Repositories
             db = sqlConnection;
         }
 
+        public async Task OpenConnection()
+        {
+            await db.OpenAsync();
+        }
+
+        public void CloseConnection()
+        {
+            db.Close();
+        }
+
         protected abstract Func<SqlDataReader, T> SelectMapper { get; }
 
         protected abstract Func<T, object[]> InsertValues { get; }
@@ -51,7 +61,7 @@ namespace CourseWorksHandler.WEB.Repositories
                 throw new ArgumentException($"Not found {tableName} with Id = {id}");
             }
             var obj = SelectMapper(reader);
-            reader.Close();
+            reader.Dispose();
             return obj;
         }
 
@@ -59,13 +69,14 @@ namespace CourseWorksHandler.WEB.Repositories
         {
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = $"SELECT * FROM {tableName}";
-            var reader = await selectCommand.ExecuteReaderAsync();
             var items = new List<T>();
-            while (await reader.ReadAsync())
+            using (var reader = await selectCommand.ExecuteReaderAsync())
             {
-                items.Add(SelectMapper(reader));
+                while (await reader.ReadAsync())
+                {
+                    items.Add(SelectMapper(reader));
+                }
             }
-            reader.Close();
             return items;
         }
 

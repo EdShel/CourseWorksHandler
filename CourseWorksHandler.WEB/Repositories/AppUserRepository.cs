@@ -47,14 +47,14 @@ namespace CourseWorksHandler.WEB.Repositories
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = $"SELECT * FROM AppUser WHERE Email = @email";
             selectCommand.Parameters.AddWithValue("@email", email);
-            var reader = await selectCommand.ExecuteReaderAsync();
-            if (!(await reader.ReadAsync()))
+            using (var reader = await selectCommand.ExecuteReaderAsync())
             {
-                return null;
+                if (!(await reader.ReadAsync()))
+                {
+                    return null;
+                }
+                return SelectMapper(reader);
             }
-            var user = SelectMapper(reader);
-            reader.Close();
-            return user;
         }
 
         protected override Func<SqlDataReader, AppUser> SelectMapper

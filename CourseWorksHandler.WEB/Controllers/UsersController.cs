@@ -13,14 +13,11 @@ namespace CourseWorksHandler.WEB.Controllers
 {
     public class UsersController : Controller
     {
-        private SqlConnection db;
-
         private AppUserRepository usersRepository;
 
-        public UsersController(SqlConnection db)
+        public UsersController(AppUserRepository usersRepository)
         {
-            this.db = db;
-            this.usersRepository = new AppUserRepository(db);
+            this.usersRepository = usersRepository;
         }
 
         [HttpGet]
@@ -34,75 +31,107 @@ namespace CourseWorksHandler.WEB.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppUser user = await usersRepository.GetByEmailAsync(model.Email);
-                if (user != null && usersRepository.VerifyPassword(user, model.Password))
+                try
                 {
-                    await Authenticate(user);
-                    return RedirectToAction("Index", "Home");
+                    await usersRepository.OpenConnection();
+                    AppUser user = await usersRepository.GetByEmailAsync(model.Email);
+                    if (user != null && usersRepository.VerifyPassword(user, model.Password))
+                    {
+                        await Authenticate(user);
+                        return RedirectToAction("Index", "Home");
+                    }
+                    ModelState.AddModelError("", "Invalid login and/or password");
                 }
-                ModelState.AddModelError("", "Invalid login and/or password");
+                finally
+                {
+                    usersRepository.CloseConnection();
+                }
             }
             return View(model);
         }
+
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult RegisterTeacher()
         {
             return View();
         }
 
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterTeacher(RegisterTeacherModel model)
         {
             if (ModelState.IsValid)
             {
-                AppUser user = await usersRepository.GetByEmailAsync(model.Email);
-                if (user == null)
+                try
                 {
-                    try
+                    await usersRepository.OpenConnection();
+                    AppUser user = await usersRepository.GetByEmailAsync(model.Email);
+                    if (user == null)
                     {
-                        await usersRepository.RegisterTeacherAsync(model);
-                        user = await usersRepository.GetByEmailAsync(model.Email);
-                        await Authenticate(user);
-                    }
-                    catch (Exception ex)
-                    {
-                        ModelState.AddModelError("", ex.Message);
-                    }
+                        try
+                        {
+                            await usersRepository.RegisterTeacherAsync(model);
+                            user = await usersRepository.GetByEmailAsync(model.Email);
+                            await Authenticate(user);
+                        }
+                        catch (Exception ex)
+                        {
+                            ModelState.AddModelError("", ex.Message);
+                            return View(model);
+                        }
 
-                    return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Teacher is already registered");
+                    }
                 }
-                else
+                finally
                 {
-                    ModelState.AddModelError("", "Teacher is already registered");
+                    usersRepository.CloseConnection();
                 }
             }
             return View(model);
         }
 
-        [HttpPost]
+        [HttpGet]
+        public IActionResult RegisterStudent()
+        {
+            return View();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterStudent(RegisterStudentModel model)
         {
             if (ModelState.IsValid)
             {
-                AppUser user = await usersRepository.GetByEmailAsync(model.Email);
-                if (user == null)
+                try
                 {
-                    try
+                    await usersRepository.OpenConnection();
+                    AppUser user = await usersRepository.GetByEmailAsync(model.Email);
+                    if (user == null)
                     {
-                        await usersRepository.RegisterStudentAsync(model);
-                        user = await usersRepository.GetByEmailAsync(model.Email);
-                        await Authenticate(user);
-                    }
-                    catch (Exception ex)
-                    {
-                        ModelState.AddModelError("", ex.Message);
-                    }
+                        try
+                        {
+                            await usersRepository.RegisterStudentAsync(model);
+                            user = await usersRepository.GetByEmailAsync(model.Email);
+                            await Authenticate(user);
+                        }
+                        catch (Exception ex)
+                        {
+                            ModelState.AddModelError("", ex.Message);
+                        }
 
-                    return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Student is already registered");
+                    }
                 }
-                else
+                finally
                 {
-                    ModelState.AddModelError("", "Student is already registered");
+                    usersRepository.CloseConnection();
                 }
             }
             return View(model);
@@ -120,6 +149,7 @@ namespace CourseWorksHandler.WEB.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
 
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

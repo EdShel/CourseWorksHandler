@@ -1,0 +1,36 @@
+﻿@model RegisterTeacherModel
+
+@{
+    ViewData["Title"] = "Реєстрація";
+}
+
+<h2>Реєстрація викладача</h2>
+
+<form asp-action="RegisterTeacher" asp-controller="Users" asp-anti-forgery="true">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <div>
+        <div>
+            <label asp-for="Email">Email викладача</label><br />
+            <input type="text" asp-for="Email" />
+            <span asp-validation-for="Email" />
+        </div>
+        <div>
+            <label asp-for="FullName">ПІБ викладача</label><br />
+            <input asp-for="FullName" />
+            <span asp-validation-for="FullName" />
+        </div>
+        <div>
+            <label asp-for="Password">Введіть пароль</label><br />
+            <input asp-for="Password" />
+            <span asp-validation-for="Password" />
+        </div>
+        <div>
+            <label asp-for="ConfirmPassword">Повторіть пароль</label><br />
+            <input asp-for="ConfirmPassword" />
+            <span asp-validation-for="ConfirmPassword" />
+        </div>
+        <div>
+            <input type="submit" value="Зареєструватися" />
+        </div>
+    </div>
+</form>

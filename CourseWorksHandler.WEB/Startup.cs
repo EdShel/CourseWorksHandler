@@ -46,6 +46,8 @@ namespace CourseWorksHandler.WEB
 
             services.AddTransient(_ => new SqlConnection(
                 Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddTransient<AppUserRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -63,6 +65,8 @@ namespace CourseWorksHandler.WEB
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
