@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace CourseWorksHandler.WEB.Repositories
 {
-
     public sealed class StudentRepository : BasicAsyncRepository<Student>
     {
         public StudentRepository(SqlConnection sqlConnection) : base(sqlConnection)
@@ -44,15 +43,6 @@ namespace CourseWorksHandler.WEB.Repositories
             return (int)await selectCount.ExecuteScalarAsync();
         }
 
-        public async Task SubmitCourseWork(CourseWorkSubmissionModel model)
-        {
-            var submitCommand = db.CreateCommand();
-            submitCommand.CommandText = "EXEC SubmitCourseWork @studentId, @theme, @task";
-            submitCommand.Parameters.AddWithValue("@studentId", model.StudentId);
-            submitCommand.Parameters.AddWithValue("@theme", model.Theme);
-            submitCommand.Parameters.AddWithValue("@task", model.Task);
-            await submitCommand.ExecuteNonQueryAsync();
-        }
 
         #region Default implementation
 

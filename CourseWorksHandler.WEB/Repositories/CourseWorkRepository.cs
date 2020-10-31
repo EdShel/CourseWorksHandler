@@ -1,6 +1,8 @@
 ﻿using CourseWorksHandler.WEB.Models;
+using CourseWorksHandler.WEB.ViewModels;
 using System;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace CourseWorksHandler.WEB.Repositories
 {
@@ -8,6 +10,16 @@ namespace CourseWorksHandler.WEB.Repositories
     {
         public CourseWorkRepository(SqlConnection sqlConnection) : base(sqlConnection)
         {
+        }
+
+        public async Task SubmitCourseWork(CourseWorkSubmissionModel model)
+        {
+            var submitCommand = db.CreateCommand();
+            submitCommand.CommandText = "EXEC SubmitCourseWork @studentId, @theme, @task";
+            submitCommand.Parameters.AddWithValue("@studentId", model.StudentId);
+            submitCommand.Parameters.AddWithValue("@theme", model.Theme);
+            submitCommand.Parameters.AddWithValue("@task", model.Task);
+            await submitCommand.ExecuteNonQueryAsync();
         }
 
         protected override Func<SqlDataReader, CourseWork> SelectMapper
