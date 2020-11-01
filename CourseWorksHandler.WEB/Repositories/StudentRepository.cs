@@ -28,7 +28,7 @@ namespace CourseWorksHandler.WEB.Repositories
                 {
                     GroupName = r.GetString(0),
                     StudentName = r.GetString(1),
-                    Theme = r.GetString(2),
+                    Theme = await r.IsDBNullAsync(2) ? null : r.GetString(2),
                     Mark = r.GetInt32(3)
                 });
             }

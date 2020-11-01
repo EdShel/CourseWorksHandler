@@ -55,14 +55,14 @@ namespace CourseWorksHandler.WEB.Repositories
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = $"SELECT * FROM {tableName} WHERE Id = @id";
             selectCommand.Parameters.AddWithValue("@id", id);
-            var reader = await selectCommand.ExecuteReaderAsync();
-            if (!(await reader.ReadAsync()))
+            using (var reader = await selectCommand.ExecuteReaderAsync())
             {
-                throw new ArgumentException($"Not found {tableName} with Id = {id}");
+                if (await reader.ReadAsync())
+                {
+                    return SelectMapper(reader);
+                }
+                return null;
             }
-            var obj = SelectMapper(reader);
-            reader.Dispose();
-            return obj;
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()

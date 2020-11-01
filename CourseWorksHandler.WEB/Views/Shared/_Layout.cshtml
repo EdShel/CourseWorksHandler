@@ -34,9 +34,21 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Головна</a></li>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <li><a asp-area="" asp-controller="Users" asp-action="Login">Увійти</a></li>
+                        <li><a asp-area="" asp-controller="Users" asp-action="RegisterTeacher">Зареєструвати викладача</a></li>
+                        <li><a asp-area="" asp-controller="Users" asp-action="RegisterStudent">Зареєструвати студента</a></li>
+                    }
+                    else if (User.IsInRole("Student"))
+                    {
+                        <li><a asp-area="" asp-controller="CourseWork" asp-action="SubmitCourseWork">Затвердити тему</a></li>
+                    }
+                    else
+                    {
+
+                    }
                 </ul>
             </div>
         </div>
