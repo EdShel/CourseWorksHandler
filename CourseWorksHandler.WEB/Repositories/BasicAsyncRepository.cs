@@ -139,7 +139,7 @@ namespace CourseWorksHandler.WEB.Repositories
                 sb.Append('=');
                 sb.Append($"@{i}");
             }
-            sb.Append("WHERE ");
+            sb.Append(" WHERE ");
             sb.Append(UpdatePredicatePropertyEqualsValue.PropertyName);
             sb.Append("=@id");
             return sb.ToString();

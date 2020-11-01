@@ -9,5 +9,7 @@
         public string Theme { set; get; }
 
         public int Mark { set; get; }
+
+        public int StudentId { set; get; }
     }
 }

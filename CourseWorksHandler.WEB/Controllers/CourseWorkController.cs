@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CourseWorksHandler.WEB.Controllers
 {
+
     public class CourseWorkController : Controller
     {
         private AppUserRepository users;
@@ -18,8 +19,8 @@ namespace CourseWorksHandler.WEB.Controllers
             this.users = users;
             this.courseWorks = courseWorks;
         }
-        
-        [HttpGet, Authorize(Roles ="Student")]
+
+        [HttpGet, Authorize(Roles = "Student")]
         public async Task<IActionResult> SubmitCourseWork()
         {
             AppUser currentStudent = null;

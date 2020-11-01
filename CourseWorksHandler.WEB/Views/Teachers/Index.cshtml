@@ -1,8 +1,38 @@
-﻿@model IEnumerable<Teacher>
+﻿
+@{
+    ViewData["Title"] = "Сторінка викладача";
+}
 
-<ul>
-    @foreach(var t in Model)
-    {
-        <li>@t.FullName</li>
-    }
-</ul>
+<h2>Сторінка викладача</h2>
+
+
+<div id="groupsTable">
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Керівник</th>
+                <th scope="col">Група</th>
+                <th scope="col">Студентів</th>
+                <th scope="col">Середня оцінка</th>
+                <th scope="col">Стати керівником</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="x in rows">
+                <th>{{ x.teacherId == -1 ? 'Немає' : x.teacherName }}</th>
+                <th>{{ x.groupName }}</th>
+                <td>{{ x.studentsCount }}</td>
+                <td>{{ x.averageMark }}</td>
+                <td>
+                    <a href="#" v-if="x.teacherId != teacherId" v-on:click.prevent="applyForGroup(x.id)">Стати керівником</a>
+                    <a href="#" v-else v-on:click.prevent="discardFromGroup(x.id)">Відмовитися</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<script>let teacherId = @User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;</script>
+<script src="~/js/groupsTable.js"></script>

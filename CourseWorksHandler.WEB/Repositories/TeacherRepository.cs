@@ -1,6 +1,7 @@
 ﻿using CourseWorksHandler.WEB.Models;
 using System;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace CourseWorksHandler.WEB.Repositories
 {

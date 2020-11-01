@@ -51,7 +51,17 @@
                     }
                     else
                     {
-
+                        <li><a asp-area="" asp-controller="Teachers" asp-action="Index">Сторінка викладача</a></li>
+                    }
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>
+                            <a>
+                                <form asp-controller="Users" asp-action="Logout" method="post">
+                                    <input type="submit" value="Вийти" />
+                                </form>
+                            </a>
+                        </li>
                     }
                 </ul>
             </div>

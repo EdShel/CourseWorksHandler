@@ -49,7 +49,9 @@ namespace CourseWorksHandler.WEB
 
             services.AddTransient<AppUserRepository>();
             services.AddTransient<StudentRepository>();
+            services.AddTransient<TeacherRepository>();
             services.AddTransient<CourseWorkRepository>();
+            services.AddTransient<GroupsRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

@@ -1,13 +1,13 @@
 ﻿using CourseWorksHandler.WEB.Models;
 using CourseWorksHandler.WEB.ViewModels;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 namespace CourseWorksHandler.WEB.Repositories
 {
+
     public sealed class StudentRepository : BasicAsyncRepository<Student>
     {
         public StudentRepository(SqlConnection sqlConnection) : base(sqlConnection)
@@ -20,20 +20,22 @@ namespace CourseWorksHandler.WEB.Repositories
             functionCallCommand.CommandText = "SELECT * FROM GetStudentsGeneralInfoPaginated(@pageIndex, @pageSize)";
             functionCallCommand.Parameters.AddWithValue("@pageIndex", pageIndex);
             functionCallCommand.Parameters.AddWithValue("@pageSize", pageSize);
-            var r = await functionCallCommand.ExecuteReaderAsync();
-            var results = new List<StudentsGeneralInfo>();
-            while (await r.ReadAsync())
+            using (var r = await functionCallCommand.ExecuteReaderAsync())
             {
-                results.Add(new StudentsGeneralInfo
+                var results = new List<StudentsGeneralInfo>();
+                while (await r.ReadAsync())
                 {
-                    GroupName = r.GetString(0),
-                    StudentName = r.GetString(1),
-                    Theme = await r.IsDBNullAsync(2) ? null : r.GetString(2),
-                    Mark = r.GetInt32(3)
-                });
+                    results.Add(new StudentsGeneralInfo
+                    {
+                        GroupName = r.GetString(0),
+                        StudentName = r.GetString(1),
+                        Theme = await r.IsDBNullAsync(2) ? null : r.GetString(2),
+                        Mark = r.GetInt32(3),
+                        StudentId = r.GetInt32(4)
+                    });
+                }
+                return results;
             }
-
-            return results;
         }
 
         public async Task<int> GetStudentsCount()
@@ -75,14 +77,14 @@ namespace CourseWorksHandler.WEB.Repositories
                             ? null : new CourseWork
                             {
                                 Id = studentId,
-                                Task = r.GetString(5),
-                                Theme = r.GetString(6),
+                                Theme = r.GetString(5),
+                                Task = r.GetString(6),
                                 SubmissionTime = r.GetDateTime(7)
                             }
                     };
                 }
             }
-                
+
             return null;
         }
 
@@ -95,7 +97,7 @@ namespace CourseWorksHandler.WEB.Repositories
             var history = new List<CourseWorkHistoryEntry>();
             using (var r = await getCommand.ExecuteReaderAsync())
             {
-                while(await r.ReadAsync())
+                while (await r.ReadAsync())
                 {
                     history.Add(new CourseWorkHistoryEntry
                     {
