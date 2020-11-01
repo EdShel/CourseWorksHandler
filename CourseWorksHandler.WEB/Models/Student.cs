@@ -1,4 +1,6 @@
-﻿namespace CourseWorksHandler.WEB.Models
+﻿using System;
+
+namespace CourseWorksHandler.WEB.Models
 {
     public class Student
     {

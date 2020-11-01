@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CourseWorksHandler.WEB</title>
+    <title>@ViewData["Title"] Облік курсових</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -30,11 +30,10 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">CourseWorksHandler.WEB</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Головна</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Головна</a></li>
                     @if (!User.Identity.IsAuthenticated)
                     {
                         <li><a asp-area="" asp-controller="Users" asp-action="Login">Увійти</a></li>
@@ -43,6 +42,11 @@
                     }
                     else if (User.IsInRole("Student"))
                     {
+                        var id = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+                        if (id != null)
+                        {
+                            <li><a asp-area="" asp-controller="Students" asp-action="ViewWork" asp-route-id="@id">Моя сторінка</a></li>
+                        }
                         <li><a asp-area="" asp-controller="CourseWork" asp-action="SubmitCourseWork">Затвердити тему</a></li>
                     }
                     else
@@ -58,7 +62,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2020 - CourseWorksHandler.WEB</p>
+            <p>&copy; 2020 - Облік курсових робіт, Шелємєтьєв Едуард Олександрович</p>
         </footer>
     </div>
 

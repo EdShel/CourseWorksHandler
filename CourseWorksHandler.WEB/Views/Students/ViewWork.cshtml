@@ -1,0 +1,77 @@
+﻿@model StudentInfo
+
+@{
+    ViewData["Title"] = Model.Student.FullName;
+}
+
+<h2>@Model.Student.FullName</h2>
+
+<div class="row">
+    <div class="col col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <div class="row">
+            <div class="col col-md-4">
+                <b>ПІБ студента:</b>
+            </div>
+            <div class="col col-md-8">
+                @Model.Student.FullName
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-md-4">
+                <b>Група:</b>
+            </div>
+            <div class="col col-md-8">
+                @Model.Group.GroupName
+            </div>
+        </div>
+        <div class="row">
+            <div class="col col-md-4">
+                <b>Керівник:</b>
+            </div>
+            <div class="col col-md-8">
+                @if (Model.Teacher == null)
+                {
+                    @:Відсутній
+                }
+                else
+                {
+                    @Model.Teacher.FullName
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        @if (Model.CourseWork == null)
+        {
+            <span style="color: red">Не затвердив тему!</span>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col col-md-4">
+                    <b>Тема: </b>
+                </div>
+                <div class="col col-md-8">
+                    @Model.CourseWork.Theme
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-md-4">
+                    <b>Постановка задачі</b>
+                </div>
+                <div class="col col-md-8">
+                    @Model.CourseWork.Task
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-md-4">
+                    <b>Дата затвердження:</b>
+                </div>
+                <div class="col col-md-8">
+                    @Model.CourseWork.SubmissionTime.ToString("HH:mm dd.MM.yy")
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -137,7 +138,8 @@ namespace CourseWorksHandler.WEB.Controllers
             var claims = new Claim[]
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.RoleName)
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.RoleName),
+                new Claim("id", user.Id.ToString())
             };
             ClaimsIdentity id = new ClaimsIdentity(
                 claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);

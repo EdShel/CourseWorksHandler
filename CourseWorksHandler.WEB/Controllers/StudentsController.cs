@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using CourseWorksHandler.WEB.Models;
 using CourseWorksHandler.WEB.Repositories;
 using CourseWorksHandler.WEB.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,26 @@ namespace CourseWorksHandler.WEB.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ViewWork(int id)
+        {
+            try
+            {
+                await students.OpenConnectionAsync();
+                StudentInfo info = await students.GetStudentInfo(id);
+                if (info == null)
+                {
+                    return NotFound();
+                }
+
+                return View(info);
+            }
+            finally
+            {
+                students.CloseConnection();
+            }
         }
 
         [HttpGet]

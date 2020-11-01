@@ -22,7 +22,7 @@ namespace CourseWorksHandler.WEB.Repositories
             functionCallCommand.Parameters.AddWithValue("@pageSize", pageSize);
             var r = await functionCallCommand.ExecuteReaderAsync();
             var results = new List<StudentsGeneralInfo>();
-            while(await r.ReadAsync())
+            while (await r.ReadAsync())
             {
                 results.Add(new StudentsGeneralInfo
                 {
@@ -43,6 +43,46 @@ namespace CourseWorksHandler.WEB.Repositories
             return (int)await selectCount.ExecuteScalarAsync();
         }
 
+
+        public async Task<StudentInfo> GetStudentInfo(int studentId)
+        {
+            var selectCommand = db.CreateCommand();
+            selectCommand.CommandText = "SELECT * FROM GetStudentFullInfo(@id)";
+            selectCommand.Parameters.AddWithValue("@id", studentId);
+            var r = await selectCommand.ExecuteReaderAsync();
+            if (await r.ReadAsync())
+            {
+                return new StudentInfo
+                {
+                    Student = new Student
+                    {
+                        Id = studentId,
+                        FullName = r.GetString(0),
+                        Mark = r.GetInt32(1)
+                    },
+                    Group = new AcademicGroup
+                    {
+                        GroupName = r.GetString(2)
+                    },
+                    Teacher = r.GetInt32(3) == -1
+                        ? null : new Teacher
+                        {
+                            Id = r.GetInt32(3),
+                            FullName = r.GetString(4)
+                        },
+                    CourseWork = String.IsNullOrEmpty(r.GetString(5))
+                        ? null : new CourseWork
+                        {
+                            Id = studentId,
+                            Task = r.GetString(5),
+                            Theme = r.GetString(6),
+                            SubmissionTime = r.GetDateTime(7)
+                        }
+                };
+            }
+
+            return null;
+        }
 
         #region Default implementation
 
