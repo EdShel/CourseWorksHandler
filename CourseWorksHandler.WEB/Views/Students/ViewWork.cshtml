@@ -75,3 +75,29 @@
         }
     </div>
 </div>
+
+<div id="history">
+    <button v-on:click="updateHistory">Переглянути попередні версії</button>
+
+    <table v-if="seen" class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Тема</th>
+                <th scope="col">Постановка задачі</th>
+                <th scope="col">Дата</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="x in history">
+                <th>{{ x.theme }}</th>
+                <td>{{ x.task }}</td>
+                <td>{{ new Date(x.changeTime).toLocaleString() }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    let studentId = @Model.Student.Id;
+</script>
+<script src="~/js/courseWorkChangesHistory.js"></script>

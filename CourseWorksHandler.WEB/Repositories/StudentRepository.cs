@@ -49,39 +49,63 @@ namespace CourseWorksHandler.WEB.Repositories
             var selectCommand = db.CreateCommand();
             selectCommand.CommandText = "SELECT * FROM GetStudentFullInfo(@id)";
             selectCommand.Parameters.AddWithValue("@id", studentId);
-            var r = await selectCommand.ExecuteReaderAsync();
-            if (await r.ReadAsync())
+            using (var r = await selectCommand.ExecuteReaderAsync())
             {
-                return new StudentInfo
+                if (await r.ReadAsync())
                 {
-                    Student = new Student
+                    return new StudentInfo
                     {
-                        Id = studentId,
-                        FullName = r.GetString(0),
-                        Mark = r.GetInt32(1)
-                    },
-                    Group = new AcademicGroup
-                    {
-                        GroupName = r.GetString(2)
-                    },
-                    Teacher = r.GetInt32(3) == -1
-                        ? null : new Teacher
-                        {
-                            Id = r.GetInt32(3),
-                            FullName = r.GetString(4)
-                        },
-                    CourseWork = String.IsNullOrEmpty(r.GetString(5))
-                        ? null : new CourseWork
+                        Student = new Student
                         {
                             Id = studentId,
-                            Task = r.GetString(5),
-                            Theme = r.GetString(6),
-                            SubmissionTime = r.GetDateTime(7)
-                        }
-                };
+                            FullName = r.GetString(0),
+                            Mark = r.GetInt32(1)
+                        },
+                        Group = new AcademicGroup
+                        {
+                            GroupName = r.GetString(2)
+                        },
+                        Teacher = r.GetInt32(3) == -1
+                            ? null : new Teacher
+                            {
+                                Id = r.GetInt32(3),
+                                FullName = r.GetString(4)
+                            },
+                        CourseWork = String.IsNullOrEmpty(r.GetString(5))
+                            ? null : new CourseWork
+                            {
+                                Id = studentId,
+                                Task = r.GetString(5),
+                                Theme = r.GetString(6),
+                                SubmissionTime = r.GetDateTime(7)
+                            }
+                    };
+                }
             }
-
+                
             return null;
+        }
+
+        public async Task<IEnumerable<CourseWorkHistoryEntry>> GetCourseWorkHistory(int studentId)
+        {
+            var getCommand = db.CreateCommand();
+            getCommand.CommandText = "EXEC GetCourseWorkHistory @id";
+            getCommand.Parameters.AddWithValue("@id", studentId);
+
+            var history = new List<CourseWorkHistoryEntry>();
+            using (var r = await getCommand.ExecuteReaderAsync())
+            {
+                while(await r.ReadAsync())
+                {
+                    history.Add(new CourseWorkHistoryEntry
+                    {
+                        Theme = r.GetString(0),
+                        Task = r.GetString(1),
+                        ChangeTime = r.GetDateTime(2)
+                    });
+                }
+            }
+            return history;
         }
 
         #region Default implementation

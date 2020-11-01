@@ -60,6 +60,21 @@ namespace CourseWorksHandler.WEB.Controllers
                 totalPages = pagesCount
             });
         }
+
+        [HttpGet]
+        public async Task<JsonResult> CourseWorkChanges(int id)
+        {
+            try
+            {
+                await students.OpenConnectionAsync();
+                IEnumerable<CourseWorkHistoryEntry> history = await students.GetCourseWorkHistory(id);
+                return Json(history);
+            }
+            finally
+            {
+                students.CloseConnection();
+            }
+        }
     }
 
     public class TeachersController : Controller
