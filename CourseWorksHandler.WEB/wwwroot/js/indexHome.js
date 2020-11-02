@@ -3,7 +3,8 @@
     data: {
         pagesCount: 0,
         pageIndex: 0,
-        tableRows: []
+        tableRows: [],
+        searchQuery: ""
     },
     mounted: function () {
         this.updateTablePage(this.pageIndex);
@@ -20,6 +21,9 @@
         updateTablePage(pageIndex) {
             pageIndex = Math.max(0, Math.min(pageIndex, this.pagesCount));
             let url = "/Students/GetGeneralInfoTable?pageIndex=" + this.pageIndex;
+            if (this.searchQuery !== undefined) {
+                url += "&search=" + this.searchQuery.trim();
+            }
 
             axios.get(url).then(response => {
                 let data = response.data;

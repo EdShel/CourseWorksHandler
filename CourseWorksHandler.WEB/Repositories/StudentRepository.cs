@@ -14,12 +14,13 @@ namespace CourseWorksHandler.WEB.Repositories
         {
         }
 
-        public async Task<IEnumerable<StudentsGeneralInfo>> GetStudentsGeneralInfoPaginated(int pageIndex, int pageSize)
+        public async Task<IEnumerable<StudentsGeneralInfo>> GetStudentsGeneralInfoPaginated(int pageIndex, int pageSize, string search = null)
         {
             var functionCallCommand = db.CreateCommand();
-            functionCallCommand.CommandText = "SELECT * FROM GetStudentsGeneralInfoPaginated(@pageIndex, @pageSize)";
+            functionCallCommand.CommandText = "SELECT * FROM GetStudentsGeneralInfoPaginated(@pageIndex, @pageSize, @search)";
             functionCallCommand.Parameters.AddWithValue("@pageIndex", pageIndex);
             functionCallCommand.Parameters.AddWithValue("@pageSize", pageSize);
+            functionCallCommand.Parameters.AddWithValue("@search", search ?? "\"\"");
             using (var r = await functionCallCommand.ExecuteReaderAsync())
             {
                 var results = new List<StudentsGeneralInfo>();

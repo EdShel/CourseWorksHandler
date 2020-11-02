@@ -8,6 +8,12 @@
 
 <div id="table">
 
+    <div>
+        <label for="themeSearch">Тема роботи:</label>
+        <input id="themeSearch" type="text" v-model="searchQuery" />
+        <button v-on:click="updateTablePage(pageIndex)">Пошук</button>
+    </div>
+
     <table class="table table-hover">
         <thead>
             <tr>

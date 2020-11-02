@@ -46,12 +46,12 @@ namespace CourseWorksHandler.WEB.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetGeneralInfoTable(int pageIndex)
+        public async Task<JsonResult> GetGeneralInfoTable(int pageIndex, string search = null)
         {
             await students.OpenConnectionAsync();
             int pagesCount = await students.GetStudentsCount() / GENERAL_INFO_PAGE_SIZE;
             int pageNumber = Math.Max(0, Math.Min(pagesCount, pageIndex));
-            IEnumerable<StudentsGeneralInfo> rows = await students.GetStudentsGeneralInfoPaginated(pageNumber, GENERAL_INFO_PAGE_SIZE);
+            IEnumerable<StudentsGeneralInfo> rows = await students.GetStudentsGeneralInfoPaginated(pageNumber, GENERAL_INFO_PAGE_SIZE, search);
             students.CloseConnection();
             return Json(new
             {
