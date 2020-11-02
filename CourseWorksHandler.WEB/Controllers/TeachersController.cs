@@ -23,6 +23,27 @@ namespace CourseWorksHandler.WEB.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> PutMark(int studentId, int mark)
+        {
+            if (mark < 0 || mark > 100)
+            {
+                return RedirectToAction("ViewWork", "Students", new { id = studentId });
+            }
+
+            try
+            {
+                await teachers.OpenConnectionAsync();
+                await teachers.PutMarkToStudent(studentId, mark);
+
+                return RedirectToAction("ViewWork", "Students", new { id = studentId });
+            }
+            finally
+            {
+                teachers.CloseConnection();
+            }
+        }
+
+        [HttpPost]
         public async Task<JsonResult> DiscardFromGroup(int groupId)
         {
             try

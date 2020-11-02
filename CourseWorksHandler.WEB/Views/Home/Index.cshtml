@@ -20,7 +20,7 @@
         <tbody>
             <tr v-for="x in tableRows">
                 <th>{{ x.groupName }}</th>
-                <td>{{ x.studentName }}</td>
+                <td><a v-bind:href="'/Students/ViewWork?id=' + x.studentId">{{ x.studentName }}</a></td>
                 <td>{{ x.theme }}</td>
                 <td>{{ x.mark }}</td>
             </tr>

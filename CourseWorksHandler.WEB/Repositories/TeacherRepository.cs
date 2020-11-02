@@ -11,6 +11,15 @@ namespace CourseWorksHandler.WEB.Repositories
         {
         }
 
+        public async Task PutMarkToStudent(int studentId, int mark)
+        {
+            var putCommand = db.CreateCommand();
+            putCommand.CommandText = "EXEC PutMark @studentId, @mark";
+            putCommand.Parameters.AddWithValue("@studentId", studentId);
+            putCommand.Parameters.AddWithValue("@mark", mark);
+            await putCommand.ExecuteNonQueryAsync();
+        }
+
         protected override Func<SqlDataReader, Teacher> SelectMapper
         {
             get => r => new Teacher

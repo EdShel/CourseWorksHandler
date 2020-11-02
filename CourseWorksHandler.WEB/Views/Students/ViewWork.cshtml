@@ -39,6 +39,14 @@
                 }
             </div>
         </div>
+        <div class="row">
+            <div class="col col-md-4">
+                <b>Оцінка:</b>
+            </div>
+            <div class="col col-md-8">
+                @Model.Student.Mark
+            </div>
+        </div>
     </div>
 
     <div class="col col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -75,6 +83,19 @@
         }
     </div>
 </div>
+
+@if (User.IsInRole("Teacher"))
+{
+    <h3>Виставлення оцінки</h3>
+
+    <form asp-controller="Teachers" asp-action="PutMark">
+        <input type="hidden" name="studentId" value="@Model.Student.Id" />
+        <label for="mark">Нова оцінка:</label>
+        <input id="mark" name="mark" type="number" min="0" max="100" value="@Model.Student.Mark" />
+        <input type="submit" value="Виставити оцінку" />
+    </form>
+}
+
 
 <div id="history">
     <button v-on:click="updateHistory">Переглянути попередні версії</button>
