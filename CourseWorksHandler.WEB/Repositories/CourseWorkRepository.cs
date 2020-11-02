@@ -18,7 +18,7 @@ namespace CourseWorksHandler.WEB.Repositories
             submitCommand.CommandText = "EXEC SubmitCourseWork @studentId, @theme, @task";
             submitCommand.Parameters.AddWithValue("@studentId", model.StudentId);
             submitCommand.Parameters.AddWithValue("@theme", model.Theme);
-            submitCommand.Parameters.AddWithValue("@task", model.Task);
+            submitCommand.Parameters.AddWithValue("@task", model.Task ?? string.Empty);
             await submitCommand.ExecuteNonQueryAsync();
         }
 

@@ -8,7 +8,7 @@ namespace CourseWorksHandler.WEB.ViewModels
         public string Email { get; set; }
 
         [Required]
-        [DataType(DataType.Password)]
+        [DataType(DataType.Password), MinLength(1)]
         public string Password { get; set; }
     }
 

@@ -84,7 +84,7 @@
     </div>
 </div>
 
-@if (User.IsInRole("Teacher"))
+@if (User.IsInRole("Teacher") && User.Claims.First(cl => cl.Type == "id").Value == (Model.Teacher?.Id ?? -1).ToString())
 {
     <h3>Виставлення оцінки</h3>
 

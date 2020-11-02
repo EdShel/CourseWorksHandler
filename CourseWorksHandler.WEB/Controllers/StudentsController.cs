@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CourseWorksHandler.WEB.Models;
+﻿using CourseWorksHandler.WEB.Models;
 using CourseWorksHandler.WEB.Repositories;
 using CourseWorksHandler.WEB.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CourseWorksHandler.WEB.Controllers
 {

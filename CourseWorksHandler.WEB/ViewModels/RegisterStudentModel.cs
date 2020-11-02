@@ -14,7 +14,7 @@ namespace CourseWorksHandler.WEB.ViewModels
         public string GroupName { get; set; }
 
         [Required]
-        [DataType(DataType.Password)]
+        [DataType(DataType.Password), MinLength(1)]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
